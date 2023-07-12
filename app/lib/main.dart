@@ -7,6 +7,7 @@ void main() {
 }
 
 Color mainColor = Color.fromARGB(255, 41, 155, 140);
+Color bgColor = Color.fromARGB(255, 238, 238, 238);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -86,47 +87,66 @@ class _FormExampleState extends State<FormExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Enter your email',
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Enter your email',
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Validate will return true if the form is valid, or false if
-                // the form is invalid.
-                if (_formKey.currentState!.validate()) {
-                  // Process data.
+    return Container(
+      width: 300,
+      padding: EdgeInsets.all(20),
+      child: Material(
+        color: bgColor,
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextFormField(
+              decoration: const InputDecoration(
+                  hintText: 'Username',
+                  hintStyle: TextStyle(fontFamily: 'Poppins')),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
                 }
+                return null;
               },
-              child: const Text('Submit'),
             ),
-          ),
-        ],
+            TextFormField(
+              decoration: const InputDecoration(
+                  hintText: 'Password',
+                  hintStyle: TextStyle(fontFamily: 'Poppins')),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Container(
+                width: 600,
+                height: 44.0,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        10.0), // Adjust the border radius as desired
+                    gradient: LinearGradient(colors: [
+                      Color.fromARGB(255, 181, 222, 195),
+                      Color.fromARGB(255, 31, 189, 170)
+                    ])),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent),
+                  child: Text('LOGIN',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          decoration: TextDecoration.none)),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
