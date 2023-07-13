@@ -1,19 +1,19 @@
+import 'package:app/login.dart';
 import 'package:app/main.dart';
-import 'package:app/register.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
   
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-  decoration: const BoxDecoration(
+        decoration: const BoxDecoration(
     image: DecorationImage(
     image: AssetImage('assets/images/bg.png'),
     fit: BoxFit.cover,
@@ -26,13 +26,11 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-            const SizedBox(
-                height: 50,),
             const Image(image: AssetImage('assets/images/logo.png')),
             const SizedBox(
-                height: 30,),
+                height: 10,),
             Text(
-            'LOGIN',
+            'REGISTER',
             style: TextStyle(
               fontSize: 30,
               fontFamily: 'Poppins',
@@ -68,6 +66,29 @@ class _LoginPageState extends State<LoginPage> {
                 height: 30,),
               TextFormField(
                 decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                    borderSide:
+                      const BorderSide(width: 3, color: Color.fromARGB(255,215,215,215)),
+                    borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                    borderSide:
+                      const BorderSide(width: 3, color: Color.fromARGB(255,215,215,215)),
+                    borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    hintText: 'Email',
+                    hintStyle: const TextStyle(fontFamily: 'Poppins')),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
+                height: 30,),
+              TextFormField(
+                decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     borderSide:
                       const BorderSide(width: 3, color: Color.fromARGB(255,215,215,215)),
@@ -88,11 +109,34 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
               const SizedBox(
-                height: 20,),
+                height: 30,),
+              TextFormField(
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                      const BorderSide(width: 3, color: Color.fromARGB(255,215,215,215)),
+                    borderRadius: BorderRadius.circular(50.0)
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                    borderSide:
+                      const BorderSide(width: 3, color: Color.fromARGB(255,215,215,215)),
+                    borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    hintText: 'Confirm Password',
+                    hintStyle: const TextStyle(fontFamily: 'Poppins')),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
+                height: 10,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("No existing account yet?", 
+                  const Text("Already have an account?", 
                             style: TextStyle(
                             fontFamily: 'Poppins',
                             )
@@ -104,10 +148,10 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: (){
                       Navigator.push(
                         context,
-                         MaterialPageRoute(builder: (context) => const RegisterPage())
+                         MaterialPageRoute(builder: (context) => const LoginPage())
                       );
                     },
-                    child: const Text("Register",
+                    child: const Text("Login",
                     style: TextStyle(
                             fontFamily: 'Poppins',
                             )),
@@ -133,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent),
-                    child: const Text('LOGIN',
+                    child: const Text('REGISTER',
                         style: TextStyle(
                             fontSize: 20,
                             fontFamily: 'Poppins',
