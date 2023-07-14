@@ -1,5 +1,6 @@
 import 'package:app/login.dart';
 import 'package:app/main.dart';
+import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
 import 'package:app/homepage.dart';
 
@@ -102,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                   context,
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        Grid(),
+                        ScanPage(),
                     transitionDuration: Duration(seconds: 0),
                     reverseTransitionDuration: Duration(seconds: 0),
                   ),
@@ -154,8 +155,18 @@ class _GridState extends State<Grid> {
                 backgroundColor: mainColor,
                 child: Icon(Icons.add),
                 onPressed: () {
+                  Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    ScanPage(),
+                            transitionDuration: Duration(seconds: 0),
+                            reverseTransitionDuration: Duration(seconds: 0),
+                          ));
                   if (gridCount < 3) {
                     setState(() {
+
                       gridChild.add(
                         Container(
                           margin: EdgeInsets.all(8),
