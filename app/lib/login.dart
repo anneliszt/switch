@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -104,14 +104,22 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterPage()));
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  RegisterPage(),
+                          transitionDuration: Duration(seconds: 0),
+                          reverseTransitionDuration: Duration(seconds: 0),
+                        ),
+                      );
                     },
-                    child: const Text("Register",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                        )),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -134,8 +142,13 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()));
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    HomePage(),
+                            transitionDuration: Duration(seconds: 0),
+                            reverseTransitionDuration: Duration(seconds: 0),
+                          ));
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,

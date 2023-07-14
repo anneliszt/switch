@@ -3,6 +3,25 @@ import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:app/homepage.dart';
 
+List<Widget> gridChild = [
+  Container(
+    child: Column(children: [
+      Text('Device `1'),
+    ]),
+    margin: EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: Color.fromARGB(255, 238, 238, 238), // Change the background color
+      border: Border.all(
+        width: 3,
+        color: mainColor, // Change the border color
+      ),
+      borderRadius: BorderRadius.circular(20),
+    ),
+  ),
+];
+
+int gridCount = 0;
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -79,12 +98,15 @@ class _HomePageState extends State<HomePage> {
               ),
               // make elevated button
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Grid()),
-                  );
-                },
+                onPressed: () => Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        Grid(),
+                    transitionDuration: Duration(seconds: 0),
+                    reverseTransitionDuration: Duration(seconds: 0),
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   primary: Color.fromARGB(255, 238, 238, 238),
                   padding:
@@ -117,22 +139,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-List<Widget> gridChild = [
-  Container(
-    margin: EdgeInsets.all(8.0),
-    width: 30.0,
-    height: 50.0,
-    decoration: BoxDecoration(
-      color: Color.fromARGB(255, 238, 238, 238), // Change the background color
-      border: Border.all(
-        width: 3,
-        color: mainColor, // Change the border color
-      ),
-      borderRadius: BorderRadius.circular(20),
-    ),
-  ),
-];
-
 class Grid extends StatefulWidget {
   @override
   _GridState createState() => _GridState();
@@ -143,30 +149,33 @@ class _GridState extends State<Grid> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: mainColor,
-          child: Icon(Icons.add),
-          onPressed: () {
-            setState(() {
-              gridChild.add(
-                Container(
-                  margin: EdgeInsets.all(8.0),
-                  width: 30.0,
-                  height: 50.0,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(
-                        255, 238, 238, 238), // Change the background color
-                    border: Border.all(
-                      width: 3,
-                      color: mainColor, // Change the border color
-                    ),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              );
-            });
-          },
-        ),
+        floatingActionButton: gridCount < 3
+            ? FloatingActionButton(
+                backgroundColor: mainColor,
+                child: Icon(Icons.add),
+                onPressed: () {
+                  if (gridCount < 3) {
+                    setState(() {
+                      gridChild.add(
+                        Container(
+                          margin: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 238, 238,
+                                238), // Change the background color
+                            border: Border.all(
+                              width: 3,
+                              color: mainColor, // Change the border color
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      );
+                      gridCount++; // Increment the grid count
+                    });
+                  }
+                },
+              )
+            : null,
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -174,10 +183,38 @@ class _GridState extends State<Grid> {
               fit: BoxFit.cover,
             ),
           ),
-          child: GridView.count(
-            crossAxisCount: 2,
-            children:
-                List.generate(gridChild.length, (index) => gridChild[index]),
+          child: Column(
+            children: <Widget>[
+              const SizedBox(
+                height: 80,
+              ),
+              const Image(image: AssetImage('assets/images/placeholder.png')),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                'Hello, User',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                  color: mainColor,
+                  decoration: TextDecoration.none,
+                ),
+              ),
+              const SizedBox(
+                height: 75,
+              ),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  children: List.generate(
+                    gridChild.length,
+                    (index) => gridChild[index],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

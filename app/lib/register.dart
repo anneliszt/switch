@@ -42,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               TextFormField(
                   decoration: InputDecoration(
@@ -63,7 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 contentPadding: EdgeInsets.all(20.0),
               )),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               TextFormField(
                   decoration: InputDecoration(
@@ -84,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 contentPadding: EdgeInsets.all(20.0),
               )),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               TextFormField(
                   decoration: InputDecoration(
@@ -104,7 +104,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 contentPadding: EdgeInsets.all(20.0),
               )),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               TextFormField(
                   decoration: InputDecoration(
@@ -140,14 +140,22 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()));
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  LoginPage(),
+                          transitionDuration: Duration(seconds: 0),
+                          reverseTransitionDuration: Duration(seconds: 0),
+                        ),
+                      );
                     },
-                    child: const Text("Login",
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                        )),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
                   ),
                 ],
               ),
