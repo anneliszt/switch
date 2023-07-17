@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.4
+  cool_alert: ^2.0.1
 
 
   # The following adds the Cupertino Icons font to your application.

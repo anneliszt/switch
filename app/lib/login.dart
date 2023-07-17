@@ -2,6 +2,43 @@ import 'package:app/main.dart';
 import 'package:app/register.dart';
 import 'package:flutter/material.dart';
 import 'package:app/homepage.dart';
+import 'dart:convert';
+import 'package:http/http.dart';
+
+void login(BuildContext context, String username, password) async {
+  try {
+    Response response = await post(
+        Uri.parse('https://ojt-relay-switch-api.vercel.app/api/login'),
+        body: {'usernameOrEmail': username, 'password': password});
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body.toString());
+      print(data['token']);
+      print('Login successfully');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Login Successful'),
+            content: Text('You have successfully logged in.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print('failed: ${response.body}');
+    }
+  } catch (e) {
+    print(e.toString());
+  }
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,6 +46,9 @@ class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
+
+TextEditingController usernameController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
 
 class _LoginPageState extends State<LoginPage> {
   @override
@@ -48,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 30,
               ),
               TextFormField(
+                controller: usernameController,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
@@ -70,6 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 20,
               ),
               TextFormField(
+                controller: passwordController,
                 decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(
@@ -115,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     },
                     child: const Text(
-                      "Login",
+                      "Register",
                       style: TextStyle(
                         fontFamily: 'Poppins',
                       ),
@@ -128,9 +170,22 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
+              GestureDetector(
+                onTap: () {
+                  login(context, usernameController.text.toString(),
+                      passwordController.text.toString());
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            HomePage(),
+                        transitionDuration: Duration(seconds: 5),
+                        reverseTransitionDuration: Duration(seconds: 0),
+                      ));
+                },
                 child: Container(
-                  width: 600,
-                  height: 44.0,
+                  height: 50,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
                           10.0), // Adjust the border radius as desired
@@ -138,22 +193,8 @@ class _LoginPageState extends State<LoginPage> {
                         Color.fromARGB(255, 181, 222, 195),
                         Color.fromARGB(255, 31, 189, 170)
                       ])),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    HomePage(),
-                            transitionDuration: Duration(seconds: 0),
-                            reverseTransitionDuration: Duration(seconds: 0),
-                          ));
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent),
-                    child: const Text('LOGIN',
+                  child: Center(
+                    child: Text('LOGIN',
                         style: TextStyle(
                             fontSize: 20,
                             fontFamily: 'Poppins',
@@ -162,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: TextDecoration.none)),
                   ),
                 ),
-              ),
+              )
             ],
           )),
     );
