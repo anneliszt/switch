@@ -1,3 +1,4 @@
+import 'package:app/homepage.dart';
 import 'package:app/login.dart';
 import 'package:app/main.dart';
 import 'package:app/scanResult.dart';
@@ -24,7 +25,15 @@ class _ScanPageState extends State<ScanPage> {
       appBar: AppBar(
         toolbarHeight: 100,
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
+           onPressed: () => Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        Grid(),
+                    transitionDuration: Duration(seconds: 0),
+                    reverseTransitionDuration: Duration(seconds: 0),
+                  ),
+                ),
           icon: Image.asset('assets/images/backIcon.png'),
           iconSize: 25,
         ),

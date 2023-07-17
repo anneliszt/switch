@@ -1,22 +1,23 @@
-import 'package:app/login.dart';
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:app/main.dart';
+import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
-import 'package:app/homepage.dart';
 
 List<Widget> gridChild = [
   Container(
-    child: Column(children: [
-      Text('Device `1'),
-    ]),
-    margin: EdgeInsets.all(8),
+    margin: const EdgeInsets.all(8),
     decoration: BoxDecoration(
-      color: Color.fromARGB(255, 238, 238, 238), // Change the background color
+      color: const Color.fromARGB(255, 238, 238, 238), // Change the background color
       border: Border.all(
         width: 3,
         color: mainColor, // Change the border color
       ),
       borderRadius: BorderRadius.circular(20),
     ),
+    child: const Column(children: [
+      Text('Device `1'),
+    ]),
   ),
 ];
 
@@ -102,13 +103,13 @@ class _HomePageState extends State<HomePage> {
                   context,
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        Grid(),
-                    transitionDuration: Duration(seconds: 0),
-                    reverseTransitionDuration: Duration(seconds: 0),
+                        const ScanPage(),
+                    transitionDuration: const Duration(seconds: 0),
+                    reverseTransitionDuration: const Duration(seconds: 0),
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 238, 238, 238),
+                  backgroundColor: const Color.fromARGB(255, 238, 238, 238),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 90, vertical: 30),
                   // change stroke
@@ -147,75 +148,83 @@ class Grid extends StatefulWidget {
 class _GridState extends State<Grid> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        floatingActionButton: gridCount < 3
-            ? FloatingActionButton(
-                backgroundColor: mainColor,
-                child: Icon(Icons.add),
-                onPressed: () {
-                  if (gridCount < 3) {
-                    setState(() {
-                      gridChild.add(
-                        Container(
-                          margin: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 238, 238,
-                                238), // Change the background color
-                            border: Border.all(
-                              width: 3,
-                              color: mainColor, // Change the border color
-                            ),
-                            borderRadius: BorderRadius.circular(15),
+    return Scaffold(
+      floatingActionButton: gridCount < 3
+          ? FloatingActionButton(
+              backgroundColor: mainColor,
+              child: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const ScanPage(),
+                          transitionDuration: const Duration(seconds: 0),
+                          reverseTransitionDuration: const Duration(seconds: 0),
+                        ));
+                if (gridCount < 3) {
+                  setState(() {
+
+                    gridChild.add(
+                      Container(
+                        margin: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 238, 238,
+                              238), // Change the background color
+                          border: Border.all(
+                            width: 3,
+                            color: mainColor, // Change the border color
                           ),
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                      );
-                      gridCount++; // Increment the grid count
-                    });
-                  }
-                },
-              )
-            : null,
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/bg.png'),
-              fit: BoxFit.cover,
+                      ),
+                    );
+                    gridCount++; // Increment the grid count
+                  });
+                }
+              },
+            )
+          : null,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            const SizedBox(
+              height: 80,
             ),
-          ),
-          child: Column(
-            children: <Widget>[
-              const SizedBox(
-                height: 80,
+            const Image(image: AssetImage('assets/images/placeholder.png')),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Hello, User',
+              style: TextStyle(
+                fontSize: 30,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.bold,
+                color: mainColor,
+                decoration: TextDecoration.none,
               ),
-              const Image(image: AssetImage('assets/images/placeholder.png')),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                'Hello, User',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.bold,
-                  color: mainColor,
-                  decoration: TextDecoration.none,
+            ),
+            const SizedBox(
+              height: 75,
+            ),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                children: List.generate(
+                  gridChild.length,
+                  (index) => gridChild[index],
                 ),
               ),
-              const SizedBox(
-                height: 75,
-              ),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  children: List.generate(
-                    gridChild.length,
-                    (index) => gridChild[index],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
