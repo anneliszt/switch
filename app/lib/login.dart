@@ -15,7 +15,6 @@ void login(BuildContext context, String username, password) async {
       var data = jsonDecode(response.body.toString());
       print(data['token']);
       print('Login successfully');
-
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -40,7 +39,65 @@ void login(BuildContext context, String username, password) async {
           );
         },
       );
-    } else {
+    } 
+    else if (username.isEmpty)
+    {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text('Username is empty.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  LoginPage(),
+                          transitionDuration: Duration(seconds: 5),
+                          reverseTransitionDuration: Duration(seconds: 0),
+                        ));
+                  },
+                ),
+              ],
+            );
+          },
+        );
+    }
+    else if (password == "")
+    {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text('Password is empty.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  LoginPage(),
+                          transitionDuration: Duration(seconds: 5),
+                          reverseTransitionDuration: Duration(seconds: 0),
+                        ));
+                  },
+                ),
+              ],
+            );
+          },
+        );
+    }
+
+    else {
         showDialog(
           context: context,
           builder: (BuildContext context) {
