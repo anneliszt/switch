@@ -179,31 +179,6 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
-              GestureDetector(
-                onTap: () {
-                  login(context, usernameController.text.toString(),
-                      passwordController.text.toString());
-                },
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          10.0), // Adjust the border radius as desired
-                      gradient: const LinearGradient(colors: [
-                        Color.fromARGB(255, 181, 222, 195),
-                        Color.fromARGB(255, 31, 189, 170)
-                      ])),
-                  child: Center(
-                    child: Text('LOGIN',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            decoration: TextDecoration.none)),
-                  ),
-                ),
-              )
             ],
           )),
     );
