@@ -15,17 +15,25 @@ void login(BuildContext context, String username, password) async {
       var data = jsonDecode(response.body.toString());
       print(data['token']);
       print('Login successfully');
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Login Successful'),
+            title: const Text('Login Successful'),
             content: Text('You have successfully logged in.'),
             actions: <Widget>[
               TextButton(
                 child: Text('OK'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            HomePage(),
+                        transitionDuration: Duration(seconds: 5),
+                        reverseTransitionDuration: Duration(seconds: 0),
+                      ));
                 },
               ),
             ],
@@ -175,14 +183,6 @@ class _LoginPageState extends State<LoginPage> {
                 onTap: () {
                   login(context, usernameController.text.toString(),
                       passwordController.text.toString());
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            HomePage(),
-                        transitionDuration: Duration(seconds: 5),
-                        reverseTransitionDuration: Duration(seconds: 0),
-                      ));
                 },
                 child: Container(
                   height: 50,
