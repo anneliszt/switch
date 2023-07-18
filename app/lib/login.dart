@@ -103,17 +103,17 @@ void login(BuildContext context, String username, password) async {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Login unsuccessful'),
-              content: Text('Account does not exist.'),
+              content: Text('Account does not exist. Register your account first.'),
               actions: <Widget>[
                 TextButton(
-                  child: Text('OK'),
+                  child: Text('Register'),
                   onPressed: () {
                     Navigator.push(
                         context,
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  LoginPage(),
+                                  RegisterPage(),
                           transitionDuration: Duration(seconds: 5),
                           reverseTransitionDuration: Duration(seconds: 0),
                         ));
