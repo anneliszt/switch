@@ -44,8 +44,88 @@ void login(BuildContext context, String username, password) async {
           );
         },
       );
-    } else {
-      print('failed: ${response.body}');
+    } 
+    else if (username.isEmpty)
+    {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text('Username is empty.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  LoginPage(),
+                          transitionDuration: Duration(seconds: 5),
+                          reverseTransitionDuration: Duration(seconds: 0),
+                        ));
+                  },
+                ),
+              ],
+            );
+          },
+        );
+    }
+    else if (password == "")
+    {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text('Password is empty.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder:
+                          (context, animation, secondaryAnimation) =>
+                              LoginPage(),
+                      transitionDuration: Duration(seconds: 5),
+                      reverseTransitionDuration: Duration(seconds: 0),
+                    ));
+              },
+            ),
+          ],
+        );
+      },
+    );
+} else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Login unsuccessful'),
+            content: Text('Account does not exist.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) =>
+                                LoginPage(),
+                        transitionDuration: Duration(seconds: 5),
+                        reverseTransitionDuration: Duration(seconds: 0),
+                      ));
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   } catch (e) {
     print(e.toString());
@@ -184,6 +264,33 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
+              GestureDetector(
+                onTap: () {
+                  login(
+                      context,
+                      usernameController.text.toString(),
+                      passwordController.text.toString());
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                          10.0), // Adjust the border radius as desired
+                      gradient: const LinearGradient(colors: [
+                        Color.fromARGB(255, 181, 222, 195),
+                        Color.fromARGB(255, 31, 189, 170)
+                      ])),
+                  child: Center(
+                    child: Text('LOGIN',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            decoration: TextDecoration.none)),
+                  ),
+                ),
+              )
             ],
           )),
     );

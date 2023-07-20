@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:app/homepage.dart';
+import 'package:app/login.dart';
 import 'package:app/main.dart';
 import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
@@ -154,7 +155,7 @@ class _ChannelPageState extends State<ChannelPage> {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          const ScanPage(),
+                          LoginPage(),
                       transitionDuration: const Duration(seconds: 0),
                       reverseTransitionDuration: const Duration(seconds: 0),
                     ),
@@ -194,7 +195,7 @@ class _ChannelPageState extends State<ChannelPage> {
                       context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) =>
-                            Grid(),
+                            LoginPage(),
                         transitionDuration: Duration(seconds: 5),
                         reverseTransitionDuration: Duration(seconds: 0),
                       ));

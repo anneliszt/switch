@@ -78,8 +78,8 @@ void register(BuildContext context, String username, email, password,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Account does not exist'),
-            content: Text('Try registering an account first'),
+            title: const Text('Account already exist'),
+            content: Text('Try again'),
             actions: <Widget>[
               TextButton(
                 child: Text('OK'),
