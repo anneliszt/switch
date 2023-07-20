@@ -1,3 +1,4 @@
+import 'package:app/devices.dart';
 import 'package:app/main.dart';
 import 'package:app/register.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,9 @@ void login(BuildContext context, String username, password) async {
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body.toString());
-      print(data['token']);
+      String userID = data['_id'];
+      String token = data['token'];
+
       print('Login successfully');
       showDialog(
         context: context,
@@ -28,8 +31,10 @@ void login(BuildContext context, String username, password) async {
                   Navigator.push(
                       context,
                       PageRouteBuilder(
+                        // pageBuilder: (context, animation, secondaryAnimation) =>
+                        //     HomePage(userID: userID, tokenID: token),
                         pageBuilder: (context, animation, secondaryAnimation) =>
-                            HomePage(),
+                            DevicesPage(userID: userID, tokenID: token),
                         transitionDuration: Duration(seconds: 5),
                         reverseTransitionDuration: Duration(seconds: 0),
                       ));
@@ -39,90 +44,8 @@ void login(BuildContext context, String username, password) async {
           );
         },
       );
-    } 
-    else if (username.isEmpty)
-    {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: Text('Username is empty.'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  LoginPage(),
-                          transitionDuration: Duration(seconds: 5),
-                          reverseTransitionDuration: Duration(seconds: 0),
-                        ));
-                  },
-                ),
-              ],
-            );
-          },
-        );
-    }
-    else if (password == "")
-    {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: Text('Password is empty.'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  LoginPage(),
-                          transitionDuration: Duration(seconds: 5),
-                          reverseTransitionDuration: Duration(seconds: 0),
-                        ));
-                  },
-                ),
-              ],
-            );
-          },
-        );
-    }
-
-    else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Login unsuccessful'),
-              content: Text('Account does not exist. Register your account first.'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Register'),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  RegisterPage(),
-                          transitionDuration: Duration(seconds: 5),
-                          reverseTransitionDuration: Duration(seconds: 0),
-                        ));
-                  },
-                ),
-              ],
-            );
-          },
-        );
+    } else {
+      print('failed: ${response.body}');
     }
   } catch (e) {
     print(e.toString());
@@ -217,6 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                         fontFamily: 'Poppins',
                         color: Color.fromARGB(255, 176, 176, 176)),
                     contentPadding: EdgeInsets.all(20.0)),
+                obscureText: true,
               ),
               const SizedBox(
                 height: 20,
@@ -260,33 +184,6 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
-              GestureDetector(
-                onTap: () {
-                  login(
-                      context,
-                      usernameController.text.toString(),
-                      passwordController.text.toString());
-                },
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          10.0), // Adjust the border radius as desired
-                      gradient: const LinearGradient(colors: [
-                        Color.fromARGB(255, 181, 222, 195),
-                        Color.fromARGB(255, 31, 189, 170)
-                      ])),
-                  child: Center(
-                    child: Text('LOGIN',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            decoration: TextDecoration.none)),
-                  ),
-                ),
-              )
             ],
           )),
     );
