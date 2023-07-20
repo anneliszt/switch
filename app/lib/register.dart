@@ -74,30 +74,7 @@ void register(BuildContext context, String username, email, password,
         );
       }
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Account does not exist'),
-            content: Text('Try registering an account first'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            LoginPage(),
-                        transitionDuration: Duration(seconds: 5),
-                        reverseTransitionDuration: Duration(seconds: 0),
-                      ));
-                },
-              ),
-            ],
-          );
-        },
-      );
+      print("failed: ${response.body}");
     }
   } catch (e) {
     print(e.toString());
@@ -195,46 +172,48 @@ class _RegisterPageState extends State<RegisterPage> {
                 height: 20,
               ),
               TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 3,
-                            color: Color.fromARGB(255, 215, 215, 215)),
-                        borderRadius: BorderRadius.circular(50.0)),
-                    focusedBorder: OutlineInputBorder(
+                controller: passwordController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
-                          width: 3, color: Color.fromARGB(255, 18, 189, 169)),
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    hintText: 'Password',
-                    hintStyle: const TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Color.fromARGB(255, 176, 176, 176)),
-                    contentPadding: EdgeInsets.all(20.0),
-                  )),
+                          width: 3, color: Color.fromARGB(255, 215, 215, 215)),
+                      borderRadius: BorderRadius.circular(50.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                        width: 3, color: Color.fromARGB(255, 18, 189, 169)),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  hintText: 'Password',
+                  hintStyle: const TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Color.fromARGB(255, 176, 176, 176)),
+                  contentPadding: EdgeInsets.all(20.0),
+                ),
+                obscureText: true,
+              ),
               const SizedBox(
                 height: 20,
               ),
               TextFormField(
-                  controller: confirmPasswordController,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            width: 3,
-                            color: Color.fromARGB(255, 215, 215, 215)),
-                        borderRadius: BorderRadius.circular(50.0)),
-                    focusedBorder: OutlineInputBorder(
+                controller: confirmPasswordController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
-                          width: 3, color: Color.fromARGB(255, 18, 189, 169)),
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    hintText: 'Confirm Password',
-                    hintStyle: const TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Color.fromARGB(255, 176, 176, 176)),
-                    contentPadding: EdgeInsets.all(20.0),
-                  )),
+                          width: 3, color: Color.fromARGB(255, 215, 215, 215)),
+                      borderRadius: BorderRadius.circular(50.0)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                        width: 3, color: Color.fromARGB(255, 18, 189, 169)),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  hintText: 'Confirm Password',
+                  hintStyle: const TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Color.fromARGB(255, 176, 176, 176)),
+                  contentPadding: EdgeInsets.all(20.0),
+                ),
+                obscureText: true,
+              ),
               const SizedBox(
                 height: 10,
               ),
