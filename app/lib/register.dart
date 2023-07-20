@@ -74,7 +74,30 @@ void register(BuildContext context, String username, email, password,
         );
       }
     } else {
-      print("failed: ${response.body}");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Account does not exist'),
+            content: Text('Try registering an account first'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            LoginPage(),
+                        transitionDuration: Duration(seconds: 5),
+                        reverseTransitionDuration: Duration(seconds: 0),
+                      ));
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   } catch (e) {
     print(e.toString());
