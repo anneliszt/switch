@@ -6,14 +6,14 @@ import 'package:app/main.dart';
 import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
 
-class ChannelPage extends StatefulWidget {
-  const ChannelPage({super.key});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
 
   @override
-  _ChannelPageState createState() => _ChannelPageState();
+  _DashboardPageState createState() => _DashboardPageState();
 }
 
-class _ChannelPageState extends State<ChannelPage> {
+class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,16 +32,27 @@ class _ChannelPageState extends State<ChannelPage> {
               ),
             Material(
               color: Colors.transparent,
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: Icon( 
-                    Icons.chevron_left,
-                    color: Color(0xFF39A094),
-                    size: 40,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon( 
+                      Icons.chevron_left_outlined,
+                      color: Color(0xFF39A094),
+                      size: 40,
+                    ),
                   ),
-                ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon( 
+                      Icons.notifications_outlined,
+                      color: Color(0xFF393939),
+                      size: 40,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(
@@ -53,32 +64,53 @@ class _ChannelPageState extends State<ChannelPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Text(
-                      'DEVICE 1',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        decoration: TextDecoration.none,
+                      Text('Channels',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                          color: mainColor,
+                          decoration: TextDecoration.none,
+                        )
                       ),
-                    ),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.circle, color: Color(0xFFF46262), size: 13),
+                        const Icon(Icons.signal_cellular_alt_outlined, color: Color(0xFF393939), size: 60),
                         Text(
-                          ' Inactive',
+                          '0',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 60,
                             fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w100,
-                            color: Color(0xFF889B8A),
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF393939),
+                            decoration: TextDecoration.none,
+                          )
+                        ),
+                        Text(
+                          'kWh',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xFF393939),
                             decoration: TextDecoration.none,
                           )
                         ),
                       ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),  
+                    const Text(
+                      'Consumption today',
+                      style: TextStyle(
+                        fontSize: 1,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w100,
+                        color: Color(0xFF393939),
+                        decoration: TextDecoration.none,
+                      )
                     ),
                     const SizedBox(
                       height: 30,

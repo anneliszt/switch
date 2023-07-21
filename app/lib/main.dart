@@ -1,4 +1,7 @@
+import 'package:app/channel.dart';
+import 'package:app/dashboard.dart';
 import 'package:app/devices.dart';
+import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
 import 'package:app/login.dart';
 import 'package:flutter/services.dart';

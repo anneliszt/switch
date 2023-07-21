@@ -1,3 +1,4 @@
+import 'package:app/utils/overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:app/devices.dart';
@@ -138,39 +139,53 @@ class _ScanPageState extends State<ScanPage> {
         ),
       ),
       body: Container(
-        child: MobileScanner(
-          allowDuplicates: false,
-          onDetect: (barcode, args) {
-            if (!isScanCompleted) {
-              String code = barcode.rawValue ?? "---";
-              isScanCompleted = true;
-              getGUID(context, widget.userID, code, widget.tokenID);
-
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Device registered!'),
-                    content:
-                        Text('You have successfully registered your device'),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('OK'),
-                        onPressed: () {
-                          Navigator.pop(
-                            context,
-                          );
-                        },
-                      ),
-                    ],
+        child: Stack(
+          children: [
+            MobileScanner(
+              allowDuplicates: false,
+              onDetect: (barcode, args) {
+                if (!isScanCompleted) {
+                  String code = barcode.rawValue ?? "---";
+                  isScanCompleted = true;
+                  getGUID(context, widget.userID, code, widget.tokenID);
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Device registered!'),
+                        content:
+                            Text('You have successfully registered your device'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Navigator.pop(
+                                context,
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   );
-                },
-              );
-            } else {
-              // If registration fails, set isScanCompleted back to false
-              closeScreen();
-            }
-          },
+              } else {
+                // If registration fails, set isScanCompleted back to false
+                closeScreen();
+              }
+            },
+          ),
+          Container(
+            decoration: ShapeDecoration(
+                shape: QrScannerOverlayShape1(
+                  borderColor: Color(0xFF39A094),
+                  borderRadius: 10,
+                  borderLength: 40,
+                  borderWidth: 15,
+                  cutOutSize: 300,
+                ),
+              ),
+            ),
+        ],
         ),
       ),
     );
