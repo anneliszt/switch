@@ -153,8 +153,8 @@ class _ScanPageState extends State<ScanPage> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text('Device registered!'),
-                        content:
-                            Text('You have successfully registered your device'),
+                        content: Text(
+                            'You have successfully registered your device'),
                         actions: <Widget>[
                           TextButton(
                             child: Text('OK'),
@@ -168,14 +168,14 @@ class _ScanPageState extends State<ScanPage> {
                       );
                     },
                   );
-              } else {
-                // If registration fails, set isScanCompleted back to false
-                closeScreen();
-              }
-            },
-          ),
-          Container(
-            decoration: ShapeDecoration(
+                } else {
+                  // If registration fails, set isScanCompleted back to false
+                  closeScreen();
+                }
+              },
+            ),
+            Container(
+              decoration: ShapeDecoration(
                 shape: QrScannerOverlayShape1(
                   borderColor: Color(0xFF39A094),
                   borderRadius: 10,
@@ -185,7 +185,7 @@ class _ScanPageState extends State<ScanPage> {
                 ),
               ),
             ),
-        ],
+          ],
         ),
       ),
     );

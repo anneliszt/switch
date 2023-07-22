@@ -1,14 +1,16 @@
-import 'package:app/channel.dart';
-import 'package:app/dashboard.dart';
 import 'package:app/devices.dart';
-import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
 import 'package:app/login.dart';
 import 'package:flutter/services.dart';
 import 'package:app/homepage.dart';
 import 'package:app/devices.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-void main() {
+void main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  FlutterNativeSplash.remove();
   runApp(const MyApp());
 }
 
@@ -24,9 +26,10 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
     ));
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginPage(),
+      builder: EasyLoading.init(),
     );
   }
 }
