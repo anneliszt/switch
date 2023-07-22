@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:app/dashboard.dart';
 import 'package:app/homepage.dart';
 import 'package:app/login.dart';
 import 'package:app/main.dart';
@@ -113,7 +114,19 @@ class _ChannelPageState extends State<ChannelPage> {
 
   Widget buildDeviceContainer(BuildContext context, String deviceID,
       String name, String channelID, bool status, String tokenID) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                DashboardPage(),
+            transitionDuration: Duration(seconds: 5),
+            reverseTransitionDuration: Duration(seconds: 0),
+          ),
+        );
+      },
+      child: Container(
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 238, 238, 238),
@@ -176,7 +189,9 @@ class _ChannelPageState extends State<ChannelPage> {
           ),
         ],
       ),
+    ),
     );
+    
   }
 
   @override
