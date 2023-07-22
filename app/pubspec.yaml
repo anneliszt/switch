@@ -47,6 +47,8 @@ dependencies:
   flutter_native_splash: ^2.3.1
   toggle_switch: ^2.1.0
   font_awesome_flutter: ^10.5.0
+  flutter_datetime_picker: ^1.5.1
+  flutter_intl: ^0.0.1
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"
