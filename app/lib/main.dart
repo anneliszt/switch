@@ -6,12 +6,23 @@ import 'package:app/homepage.dart';
 import 'package:app/devices.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:provider/provider.dart';
+
+import 'EditProfile.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   FlutterNativeSplash.remove();
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => ChannelNameProvider()),
+    ],
+    child: const MaterialApp(
+      title: 'EditChannel',
+      home: MyApp(),
+    ),
+  ));
 }
 
 Color mainColor = const Color.fromARGB(255, 41, 155, 140);

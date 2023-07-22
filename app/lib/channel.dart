@@ -6,11 +6,14 @@ import 'package:app/homepage.dart';
 import 'package:app/login.dart';
 import 'package:app/main.dart';
 import 'package:app/scan.dart';
+import 'package:app/editChannel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'devices.dart';
 
 var gridChild = <Widget>[];
 bool status = false;
@@ -64,6 +67,66 @@ Future getDevices(String deviceId, String token) async {
     // Return the count of devices for the specified user
     // Return the list of devices
     return jsonResponse;
+  }
+}
+
+Future<bool> addNewChannel(BuildContext context, String deviceID,
+    String tokenID, String name, String deviceStatus) async {
+  try {
+    Response response = await post(
+        Uri.parse(
+            'https://ojt-relay-switch-api.vercel.app/api/devices/channels?deviceId=${deviceID}'),
+        headers: {'auth_token': tokenID},
+        body: {'deviceId': deviceID});
+
+    if (response.statusCode == 200) {
+      print('Channel added successfully');
+      // navigate to Grid
+      Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                ChannelPage(
+              deviceID: deviceID,
+              tokenID: tokenID,
+              name: name,
+              deviceStatus: deviceStatus,
+            ),
+            transitionDuration: Duration(seconds: 5),
+            reverseTransitionDuration: Duration(seconds: 0),
+          ));
+      return true;
+    } else {
+      var errorExtract = '${response.body}';
+      // Parse the JSON response body
+      Map<String, dynamic> responseBody = jsonDecode(errorExtract);
+
+      // Extract the error message
+      String errorMessage = responseBody['error'] ?? 'Unknown error';
+
+      print('failed: ${response.body}');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text(errorMessage),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return false;
+    }
+  } catch (e) {
+    print(e.toString());
+    return false;
   }
 }
 
@@ -189,19 +252,8 @@ class _ChannelPageState extends State<ChannelPage> {
             backgroundColor: mainColor,
             child: Icon(Icons.add),
             onPressed: () {
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) =>
-                      ScanPage(
-                    gridChild: gridChild,
-                    userID: widget.deviceID,
-                    tokenID: widget.tokenID,
-                  ),
-                  transitionDuration: const Duration(seconds: 0),
-                  reverseTransitionDuration: const Duration(seconds: 0),
-                ),
-              );
+              addNewChannel(context, widget.deviceID, widget.tokenID,
+                  widget.name, widget.deviceStatus);
             },
           ),
         ),
@@ -320,7 +372,16 @@ class _ChannelPageState extends State<ChannelPage> {
                               ),
                               backgroundColor: Color(0xFFEEEEEE),
                             ),
-                            onPressed: () {},
+                            onPressed: () => Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        EditChannelPage(),
+                                transitionDuration: Duration(seconds: 5),
+                                reverseTransitionDuration: Duration(seconds: 0),
+                              ),
+                            ),
                           )
                         ],
                       ),
