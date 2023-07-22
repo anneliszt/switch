@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:app/homepage.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 void login(BuildContext context, String username, password) async {
   try {
+    EasyLoading.show(); // Show loading indicator
     Response response = await post(
         Uri.parse('https://ojt-relay-switch-api.vercel.app/api/login'),
         body: {'usernameOrEmail': username, 'password': password});
@@ -17,13 +19,24 @@ void login(BuildContext context, String username, password) async {
       String userID = data['_id'];
       String token = data['token'];
 
-      print('Login successfully');
+      // EasyLoading.showToast('Login successfully'); // Show a toast message
+      Navigator.push(
+          context,
+          PageRouteBuilder(
+            // pageBuilder: (context, animation, secondaryAnimation) =>
+            //     HomePage(userID: userID, tokenID: token),
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                DevicesPage(userID: userID, tokenID: token),
+            transitionDuration: Duration(seconds: 0),
+            reverseTransitionDuration: Duration(seconds: 0),
+          ));
+    } else if (username.isEmpty) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Login Successful'),
-            content: Text('You have successfully logged in.'),
+            title: const Text('Error'),
+            content: Text('Username is empty.'),
             actions: <Widget>[
               TextButton(
                 child: Text('OK'),
@@ -31,10 +44,8 @@ void login(BuildContext context, String username, password) async {
                   Navigator.push(
                       context,
                       PageRouteBuilder(
-                        // pageBuilder: (context, animation, secondaryAnimation) =>
-                        //     HomePage(userID: userID, tokenID: token),
                         pageBuilder: (context, animation, secondaryAnimation) =>
-                            DevicesPage(userID: userID, tokenID: token),
+                            LoginPage(),
                         transitionDuration: Duration(seconds: 5),
                         reverseTransitionDuration: Duration(seconds: 0),
                       ));
@@ -44,63 +55,32 @@ void login(BuildContext context, String username, password) async {
           );
         },
       );
-    } 
-    else if (username.isEmpty)
-    {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: Text('Username is empty.'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  LoginPage(),
-                          transitionDuration: Duration(seconds: 5),
-                          reverseTransitionDuration: Duration(seconds: 0),
-                        ));
-                  },
-                ),
-              ],
-            );
-          },
-        );
-    }
-    else if (password == "")
-    {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: Text('Password is empty.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder:
-                          (context, animation, secondaryAnimation) =>
-                              LoginPage(),
-                      transitionDuration: Duration(seconds: 5),
-                      reverseTransitionDuration: Duration(seconds: 0),
-                    ));
-              },
-            ),
-          ],
-        );
-      },
-    );
-} else {
+    } else if (password == "") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text('Password is empty.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            LoginPage(),
+                        transitionDuration: Duration(seconds: 5),
+                        reverseTransitionDuration: Duration(seconds: 0),
+                      ));
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -114,9 +94,8 @@ void login(BuildContext context, String username, password) async {
                   Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder:
-                            (context, animation, secondaryAnimation) =>
-                                LoginPage(),
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            LoginPage(),
                         transitionDuration: Duration(seconds: 5),
                         reverseTransitionDuration: Duration(seconds: 0),
                       ));
@@ -129,6 +108,7 @@ void login(BuildContext context, String username, password) async {
     }
   } catch (e) {
     print(e.toString());
+    EasyLoading.dismiss(); // Hide loading indicator in case of an exception
   }
 }
 
@@ -266,9 +246,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               GestureDetector(
                 onTap: () {
-                  login(
-                      context,
-                      usernameController.text.toString(),
+                  login(context, usernameController.text.toString(),
                       passwordController.text.toString());
                 },
                 child: Container(

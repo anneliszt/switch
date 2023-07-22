@@ -1,112 +1,14 @@
 import 'dart:convert';
+import 'package:app/channel.dart';
 import 'package:app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:app/scan.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 Map<String, int> userDeviceCount = {};
 
 var gridChild = <Widget>[];
-
-Future<void> unregisterDevice(BuildContext context, String userID,
-    String deviceID, String tokenID) async {
-  try {
-    final response = await delete(
-      Uri.parse(
-          'https://ojt-relay-switch-api.vercel.app/api/devices/unregister?userId=${userID}&deviceId=${deviceID}'),
-      headers: {'auth_token': tokenID},
-      // No need to send a body for DELETE requests
-    );
-
-    if (response.statusCode == 200) {
-      print('Device unregistered and removed successfully');
-    } else {
-      var errorExtract = '${response.body}';
-      // Parse the JSON response body
-      Map<String, dynamic> responseBody = jsonDecode(errorExtract);
-
-      // Extract the error message
-      String errorMessage = responseBody['error'] ?? 'Unknown error';
-
-      print('failed: ${response.body}');
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text(errorMessage),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
-  } catch (e) {
-    print('Error: $e');
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: Text('An error occurred while unregistering the device.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-Widget buildDeviceContainer(String name) {
-  return Container(
-    margin: const EdgeInsets.all(8),
-    decoration: BoxDecoration(
-      color: const Color.fromARGB(255, 238, 238, 238),
-      border: Border.all(
-        width: 3,
-        color: mainColor,
-      ),
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Column(
-      children: [
-        Row(
-          children: [
-            Icon(
-              Icons.devices,
-              color: Color.fromARGB(255, 32, 31, 31),
-              size: 24.0,
-              semanticLabel: 'Text to announce in accessibility modes',
-            ),
-            SizedBox(width: 10),
-            IconButton(
-                icon: Icon(
-                  Icons.remove,
-                  color: Colors.red,
-                  size: 24.0,
-                ),
-                onPressed: () {
-                  // unregisterDevice(context, userID, deviceID, tokenID);
-                })
-          ],
-        ),
-        Text('Device id: $name'),
-      ],
-    ),
-  );
-}
 
 Future getDevices(String userId, String token) async {
   // Define your base URL
@@ -165,13 +67,8 @@ class DevicesPage extends StatefulWidget {
 }
 
 class _DevicesPageState extends State<DevicesPage> {
-  @override
-  void initState() {
-    super.initState();
-    _loadDevices(); // Call the method to load devices when the page is first loaded
-  }
-
-  Future<void> _loadDevices() async {
+  Future<void> _loadDevices(BuildContext context) async {
+    EasyLoading.show(); // Show loading indicator
     List<dynamic> devices = await getDevices(widget.userID, widget.tokenID);
     if (devices.isNotEmpty) {
       // Clear the gridChild list before adding new device containers
@@ -179,53 +76,222 @@ class _DevicesPageState extends State<DevicesPage> {
 
       // Add device containers for each device in the list
       for (var device in devices) {
-        gridChild.add(buildDeviceContainer(device['name']));
+        gridChild.add(buildDeviceContainer(
+          context,
+          device['name'],
+          widget.userID,
+          device['deviceId'],
+          widget.tokenID,
+          device['status'],
+        ));
+        // Add the device to the allDevicesList
       }
-
+      EasyLoading.dismiss();
       // Force a rebuild of the widget to display the new device containers
       setState(() {});
     }
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadDevices(
+        context); // Call the method to load devices when the page is first loaded
+  }
+
+  Future<void> unregisterDevice(BuildContext context, String userID,
+      String deviceID, String tokenID) async {
+    try {
+      final response = await delete(
+          Uri.parse(
+              'https://ojt-relay-switch-api.vercel.app/api/devices/unregister?userId=${userID}&deviceId=${deviceID}'),
+          headers: {'auth_token': tokenID},
+          body: {'userId': userID, 'deviceId': deviceID});
+
+      if (response.statusCode == 200) {
+        print("Unregistered device successfully");
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext context) => super.widget));
+      } else {
+        var errorExtract = '${response.body}';
+        // Parse the JSON response body
+        Map<String, dynamic> responseBody = jsonDecode(errorExtract);
+
+        // Extract the error message
+        String errorMessage = responseBody['error'] ?? 'Unknown error';
+
+        print('failed: ${response.body}');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text(errorMessage),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text('An error occurred while unregistering the device.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void handleUnregisterDevice(
+      BuildContext context, String userID, String deviceID, String tokenID) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmation'),
+          content:
+              const Text('Are you sure you want to unregister this device?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Unregister'),
+              onPressed: () {
+                unregisterDevice(context, userID, deviceID, tokenID);
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      // pageBuilder: (context, animation, secondaryAnimation) =>
+                      //     HomePage(userID: userID, tokenID: token),
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          DevicesPage(userID: userID, tokenID: tokenID),
+                      transitionDuration: Duration(seconds: 5),
+                      reverseTransitionDuration: Duration(seconds: 0),
+                    ));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget buildDeviceContainer(BuildContext context, String name, String userID,
+      String deviceID, String tokenID, String deviceStatus) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                ChannelPage(
+              deviceID: deviceID,
+              tokenID: tokenID,
+              name: name,
+              deviceStatus: deviceStatus,
+            ),
+            transitionDuration: Duration(seconds: 5),
+            reverseTransitionDuration: Duration(seconds: 0),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 238, 238, 238),
+          border: Border.all(
+            width: 3,
+            color: mainColor,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.do_not_disturb_on,
+                    color: Colors.red,
+                    size: 24.0,
+                  ),
+                  onPressed: () {
+                    print("Unregister button");
+                    handleUnregisterDevice(context, userID, deviceID, tokenID);
+                  },
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                Icon(
+                  Icons.devices,
+                  color: mainColor,
+                  size: 80,
+                ),
+                Text('$name',
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 79, 79, 79),
+                        fontSize: 20,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: Visibility(
-          visible: gridChild.length < 4,
-          child: FloatingActionButton(
-            backgroundColor: mainColor,
-            child: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        ScanPage(
-                            gridChild: gridChild,
-                            userID: widget.userID,
-                            tokenID: widget.tokenID),
-                    transitionDuration: const Duration(seconds: 0),
-                    reverseTransitionDuration: const Duration(seconds: 0),
-                  ));
-
-              setState(() {
-                gridChild.add(
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(
-                          255, 238, 238, 238), // Change the background color
-                      border: Border.all(
-                        width: 3,
-                        color: mainColor, // Change the border color
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                );
-              });
-            },
-          )),
+        visible: gridChild.length < 4,
+        child: FloatingActionButton(
+          backgroundColor: mainColor,
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    ScanPage(
+                  gridChild: gridChild,
+                  userID: widget.userID,
+                  tokenID: widget.tokenID,
+                ),
+                transitionDuration: const Duration(seconds: 0),
+                reverseTransitionDuration: const Duration(seconds: 0),
+              ),
+            );
+          },
+        ),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -251,9 +317,6 @@ class _DevicesPageState extends State<DevicesPage> {
                 color: mainColor,
                 decoration: TextDecoration.none,
               ),
-            ),
-            const SizedBox(
-              height: 75,
             ),
             Expanded(
               child: GridView.count(
