@@ -320,6 +320,7 @@ class _DevicesPageState extends State<DevicesPage> {
             ),
             Expanded(
               child: GridView.count(
+                padding: const EdgeInsets.all(10),
                 crossAxisCount: 2,
                 children: List.generate(
                   gridChild.length,

@@ -307,18 +307,65 @@ class _ChannelPageState extends State<ChannelPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        widget.name,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      // Replace this with your actual status variable
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.name,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.edit,
+                              color: Colors.red,
+                              size: 24.0,
+                            ),
+                            onPressed: () {
+                              print("Edit button");
 
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (BuildContext context) {
+                              //     return AlertDialog(
+                              //       title: Text('Rename Channel'),
+                              //       content: TextFormField(
+                              //         decoration: InputDecoration(
+                              //           labelText: 'New Channel Name',
+                              //         ),
+                              //       ),
+                              //       actions: [
+                              //         TextButton(
+                              //           onPressed: () {
+                              //             Navigator.of(context)
+                              //                 .pop(); // Close the dialog
+                              //           },
+                              //           child: Text('Cancel'),
+                              //         ),
+                              //         TextButton(
+                              //           onPressed: () {
+                              //             String newName =
+                              //                 _channelNameController.text;
+                              //             channelNameProvider
+                              //                 .setChannelName(newName);
+                              //             Navigator.of(context)
+                              //                 .pop(); // Close the dialog
+                              //           },
+                              //           child: Text('Save'),
+                              //         ),
+                              //       ],
+                              //     );
+                              //   },
+                              // );
+                            },
+                          ),
+                        ],
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -348,7 +395,6 @@ class _ChannelPageState extends State<ChannelPage> {
                           ),
                         ],
                       ),
-
                       const SizedBox(
                         height: 30,
                       ),
