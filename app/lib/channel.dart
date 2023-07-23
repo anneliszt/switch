@@ -178,82 +178,83 @@ class _ChannelPageState extends State<ChannelPage> {
   Widget buildDeviceContainer(BuildContext context, String deviceID,
       String name, String channelID, bool status, String tokenID) {
     return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  DashboardPage(),
-              transitionDuration: Duration(seconds: 5),
-              reverseTransitionDuration: Duration(seconds: 0),
-            ),
-          );
-        },
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 238, 238, 238),
-            border: Border.all(
-              width: 3,
-              color: mainColor,
-            ),
-            borderRadius: BorderRadius.circular(20),
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                DashboardPage(name: name),
+            transitionDuration: Duration(seconds: 5),
+            reverseTransitionDuration: Duration(seconds: 0),
           ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child:
-                        Icon(Icons.settings_remote, color: mainColor, size: 50),
-                  ),
-                  Text(
-                    '$name',
-                    style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 238, 238, 238),
+          border: Border.all(
+            width: 3,
+            color: mainColor,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child:
+                      Icon(Icons.settings_remote, color: mainColor, size: 50),
+                ),
+                Text(
+                  '$name',
+                  style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
 
-                  // Here, default theme colors are used for activeBgColor, activeFgColor, inactiveBgColor and inactiveFgColor
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ToggleSwitch(
-                      isVertical: true,
-                      minWidth: 70.0,
-                      minHeight: 50.0,
-                      initialLabelIndex: 0,
-                      cornerRadius: 10.0,
-                      activeFgColor: Colors.white,
-                      inactiveBgColor: Colors.grey,
-                      inactiveFgColor: Colors.white,
-                      totalSwitches: 2,
-                      labels: ['OFF', 'ON'],
-                      icons: [
-                        FontAwesomeIcons.lightbulb,
-                        FontAwesomeIcons.solidLightbulb,
-                      ],
-                      iconSize: 30.0,
-                      activeBgColors: [
-                        [Colors.black45, Colors.black26],
-                        [Colors.yellow, Colors.orange]
-                      ],
-                      animate:
-                          true, // with just animate set to true, default curve = Curves.easeIn
-                      curve: Curves
-                          .bounceInOut, // animate must be set to true when using custom curve
-                      onToggle: (index) {
-                        print('switched to: $index');
-                      },
-                    ),
+                // Here, default theme colors are used for activeBgColor, activeFgColor, inactiveBgColor and inactiveFgColor
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ToggleSwitch(
+                    isVertical: true,
+                    minWidth: 70.0,
+                    minHeight: 50.0,
+                    initialLabelIndex: 0,
+                    cornerRadius: 10.0,
+                    activeFgColor: Colors.white,
+                    inactiveBgColor: Colors.grey,
+                    inactiveFgColor: Colors.white,
+                    totalSwitches: 2,
+                    labels: ['OFF', 'ON'],
+                    icons: [
+                      FontAwesomeIcons.lightbulb,
+                      FontAwesomeIcons.solidLightbulb,
+                    ],
+                    iconSize: 30.0,
+                    activeBgColors: [
+                      [Colors.black45, Colors.black26],
+                      [Colors.yellow, Colors.orange]
+                    ],
+                    animate:
+                        true, // with just animate set to true, default curve = Curves.easeIn
+                    curve: Curves
+                        .bounceInOut, // animate must be set to true when using custom curve
+                    onToggle: (index) {
+                      print('switched to: $index');
+                    },
                   ),
-                ],
-              ),
-            ],
-          ),
-        ));
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -493,6 +494,7 @@ class _ChannelPageState extends State<ChannelPage> {
               // ),
               Expanded(
                 child: ListView(
+                  padding: EdgeInsets.only(top: 1),
                   children: List.generate(
                     gridChild.length,
                     (index) => gridChild[index],

@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/homepage.dart';
@@ -7,9 +8,36 @@ import 'package:app/login.dart';
 import 'package:app/main.dart';
 import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+
+Future getChannels(String deviceId, String token) async {
+  // Define your base URL
+  var baseUrl =
+      'https://ojt-relay-switch-api.vercel.app/api/devices/channels?deviceId=${deviceId}';
+
+  // Define your query parameters as a map
+  var queryParameters = {'deviceId': deviceId};
+
+  // Append the query parameters to the base URL
+  var url = Uri.parse(baseUrl).replace(queryParameters: queryParameters);
+
+  var response = await get(url);
+
+  if (response.statusCode != 200) {
+    print("HTTP GET REQUEST FAILED.");
+    return 0; // Return 0 if the request fails
+  } else {
+    var jsonResponse = jsonDecode(response.body) as List<dynamic>;
+
+    // Return the count of devices for the specified user
+    // Return the list of devices
+    return jsonResponse;
+  }
+}
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
+  final String name;
+  DashboardPage({required this.name, Key? key}) : super(key: key);
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -171,7 +199,9 @@ class _DashboardPageState extends State<DashboardPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   icon: Icon(
                     Icons.chevron_left_outlined,
                     color: Color(0xFF39A094),
@@ -179,7 +209,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {},
                   icon: Icon(
                     Icons.notifications_outlined,
                     color: Color(0xFF393939),
@@ -195,7 +225,7 @@ class _DashboardPageState extends State<DashboardPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text('Channel 1',
+                Text(widget.name,
                     style: TextStyle(
                       fontSize: 30,
                       fontFamily: 'Poppins',
