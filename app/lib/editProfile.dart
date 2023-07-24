@@ -28,30 +28,36 @@ class EditProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 100,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Image.asset('assets/images/backIcon.png'),
+          iconSize: 25,
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/appBarBG.png'),
+                  fit: BoxFit.fill)),
+        ),
+        centerTitle: true,
         title: const Text(
           'Edit Channel',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
           ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        toolbarHeight: 125,
-      ),
+      ),  
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
+        padding: const EdgeInsets.all(25.0),       
+        child: Column(   
           children: [
             Consumer<ChannelNameProvider>(
               builder: (context, channelNameProvider, _) => Align(
                 alignment: Alignment
-                    .topLeft, // Align the content to the upper-left corner
+                    .topLeft,
                 child: Row(
                   children: [
                     CircleAvatar(
@@ -66,8 +72,11 @@ class EditProfileScreen extends StatelessWidget {
                       channelNameProvider.channelName,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 25,
+                        fontFamily: 'Poppins',
                         fontWeight: FontWeight.bold,
+                        color: Color(0xFF393939),
+                        decoration: TextDecoration.none,
                       ),
                     ),
                   ],
@@ -86,7 +95,7 @@ class EditProfileScreen extends StatelessWidget {
                         100, // Set the desired height of the rectangular container
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.blueGrey,
+                        color: Color(0xFFD7D7D7),
                         width: 2.0,
                       ),
                       borderRadius: BorderRadius.circular(15.0),
@@ -101,8 +110,9 @@ class EditProfileScreen extends StatelessWidget {
                         radius: 25,
                         backgroundColor: Colors.transparent,
                         child: Icon(
-                          Icons.camera_alt,
-                          color: Colors.black,
+                          Icons.add_a_photo_rounded,
+                          size: 50,
+                          color: Color(0xFF39A094),
                         ),
                       ),
                     ),
@@ -117,7 +127,7 @@ class EditProfileScreen extends StatelessWidget {
                 height: 105,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.blueGrey,
+                    color: Color(0xFFD7D7D7),
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(15.0),
@@ -127,15 +137,21 @@ class EditProfileScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.mode_edit), // Replace with your desired icon
+                      Icon(
+                        Icons.edit_rounded,
+                        size: 30,
+                        color: Color(0xFF39A094),), // Replace with your desired icon
                       SizedBox(width: 15),
                       // Add some spacing between the icon and the text
                       Text(
                         'Rename Channel 1',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 20,
+                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
-                        ),
+                          color: Color(0xFF39A094),
+                          decoration: TextDecoration.none,
+                        )
                       ),
                     ],
                   ),

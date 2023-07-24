@@ -8,20 +8,28 @@ class EditChannelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar:AppBar(
+        toolbarHeight: 100,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Image.asset('assets/images/backIcon.png'),
+          iconSize: 25,
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/appBarBG.png'),
+                  fit: BoxFit.fill)),
+        ),
+        centerTitle: true,
         title: const Text(
           'Edit Channel',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontSize: 25,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
           ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {},
-        ),
-        toolbarHeight: 125,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -37,15 +45,11 @@ class EditChannelPage extends StatelessWidget {
                 );
               },
               child: Container(
-<<<<<<< Updated upstream
-                height: 75,
-=======
                 height: 70,
                 width: 350,
->>>>>>> Stashed changes
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.blueGrey,
+                    color: Color(0xFFD7D7D7),
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(15.0),
@@ -70,13 +74,6 @@ class EditChannelPage extends StatelessWidget {
                           ),
                           SizedBox(
                               width:
-<<<<<<< Updated upstream
-                                  10), // Add spacing between the profile picture and the text
-                          Text(
-                            channelNameProvider.channelName,
-                            style: TextStyle(
-                              fontSize: 18,
-=======
                                   30),
                           Text(
                             'Edit ',
@@ -93,7 +90,6 @@ class EditChannelPage extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 20,
                               fontFamily: 'Poppins',
->>>>>>> Stashed changes
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -137,18 +133,10 @@ class EditChannelPage extends StatelessWidget {
                             },
                           );
                         },
-<<<<<<< Updated upstream
-                        child: Icon(Icons.delete),
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: Size(50, 66),
-                          primary: Colors
-                              .blueGrey, // Set the desired height and width of the button
-=======
                         child: Icon(Icons.delete, size: 30, color: Color(0xFFF46262),),
                         style: ElevatedButton.styleFrom(
                           fixedSize: Size(35, 60), 
                           backgroundColor: Color(0xFFD9D9D9), // Set the desired height and width of the button
->>>>>>> Stashed changes
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(
