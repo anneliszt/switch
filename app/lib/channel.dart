@@ -52,7 +52,7 @@ Future updateChannelStatus(
   }
 }
 
-Future<Map<String, dynamic>?> updateDeviceName(
+Future<void> updateDeviceName(
   String token,
   String deviceId,
   String userId,
@@ -61,14 +61,19 @@ Future<Map<String, dynamic>?> updateDeviceName(
   try {
     var baseUrl =
         'https://ojt-relay-switch-api.vercel.app/api/devices/update-name?deviceId=${deviceId}&userId=${userId}';
+
     var headers = {'auth_token': token};
-    var body = {'newName': newName}; // Encode the body as JSON
+    var body = {
+      'Content-Type': 'application/json',
+      'newName': newName
+    }; // Encode the body as JSON
 
     var queryParameters = {
       'deviceId': deviceId,
       'userId': userId,
     };
 
+    print(queryParameters);
     var url = Uri.parse(baseUrl).replace(queryParameters: queryParameters);
     var response = await put(url, headers: headers, body: body);
 
@@ -349,21 +354,23 @@ class _ChannelPageState extends State<ChannelPage> {
   }
 
   void _showRenameDialog(BuildContext context, String token, String deviceId,
-      String userId, String channelName) {
+      String userId, String deviceName) {
     TextEditingController _channelNameController = TextEditingController();
     final channelNameProvider =
         Provider.of<ChannelNameProvider>(context, listen: false);
     _channelNameController.text = channelNameProvider.channelName;
 
+//save device name dialog
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Rename Channel'),
+          title: Text('Rename Device'),
           content: TextFormField(
             controller: _channelNameController,
             decoration: InputDecoration(
-              labelText: 'New Channel Name',
+              labelText: 'New Device Name',
             ),
           ),
           actions: [
@@ -463,8 +470,6 @@ class _ChannelPageState extends State<ChannelPage> {
                               size: 24.0,
                             ),
                             onPressed: () {
-                              print("Edit button");
-
                               _showRenameDialog(context, widget.tokenID,
                                   widget.deviceID, widget.userID, widget.name);
                             },

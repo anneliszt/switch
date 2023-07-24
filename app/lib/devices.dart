@@ -81,6 +81,7 @@ class _DevicesPageState extends State<DevicesPage> {
           context,
           device['name'],
           widget.userID,
+          device['_id'],
           device['deviceId'],
           widget.tokenID,
           device['status'],
@@ -201,7 +202,7 @@ class _DevicesPageState extends State<DevicesPage> {
   }
 
   Widget buildDeviceContainer(BuildContext context, String name, String userID,
-      String deviceID, String tokenID, String deviceStatus) {
+      String device, String deviceID, String tokenID, String deviceStatus) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -209,6 +210,7 @@ class _DevicesPageState extends State<DevicesPage> {
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
                 ChannelPage(
+              // device: device,
               deviceID: deviceID,
               tokenID: tokenID,
               name: name,
