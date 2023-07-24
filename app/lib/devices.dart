@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:app/scan.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:provider/provider.dart';
 
 Map<String, int> userDeviceCount = {};
 
@@ -212,6 +213,7 @@ class _DevicesPageState extends State<DevicesPage> {
               tokenID: tokenID,
               name: name,
               deviceStatus: deviceStatus,
+              userID: userID,
             ),
             transitionDuration: Duration(seconds: 5),
             reverseTransitionDuration: Duration(seconds: 0),
@@ -320,6 +322,7 @@ class _DevicesPageState extends State<DevicesPage> {
             ),
             Expanded(
               child: GridView.count(
+                padding: const EdgeInsets.all(10),
                 crossAxisCount: 2,
                 children: List.generate(
                   gridChild.length,
