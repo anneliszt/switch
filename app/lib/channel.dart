@@ -14,15 +14,14 @@ import 'package:http/http.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-
 import 'devices.dart';
 
-List<Map<String, bool>> channelData = [];
+// List<Map<String, bool>> channelData = [];
 
 var gridChild = <Widget>[];
 
 class ChannelNameProvider with ChangeNotifier {
-  String _channelName = 'Channel 1'; // Initial channel name
+  String _channelName = ''; // Initial channel name
 
   String get channelName => _channelName;
 
@@ -31,45 +30,6 @@ class ChannelNameProvider with ChangeNotifier {
     notifyListeners();
   }
 }
-
-// void _showRenameDialog(BuildContext context, String token) {
-//   TextEditingController _channelNameController = TextEditingController();
-//   final channelNameProvider =
-//       Provider.of<ChannelNameProvider>(context, listen: false);
-//   _channelNameController.text = channelNameProvider.channelName;
-
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         title: Text('Rename Channel'),
-//         content: TextFormField(
-//           controller: _channelNameController,
-//           decoration: InputDecoration(
-//             labelText: 'New Channel Name',
-//           ),
-//         ),
-//         actions: [
-//           TextButton(
-//             onPressed: () {
-//               Navigator.of(context).pop(); // Close the dialog
-//             },
-//             child: Text('Cancel'),
-//           ),
-//           TextButton(
-//             onPressed: () {
-//               String newName = _channelNameController.text;
-//               channelNameProvider.setChannelName(newName);
-//               updateChannelName(token);
-//               Navigator.of(context).pop(); // Close the dialog
-//             },
-//             child: Text('Save'),
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }
 
 Future updateChannelStatus(
     String token, String deviceId, String channelId) async {
@@ -92,25 +52,42 @@ Future updateChannelStatus(
   }
 }
 
-// Future updateChannelName(String token) async {
-//   var baseUrl =
-//       'https://ojt-relay-switch-api.vercel.app/api/devices/update-channel-name?channelId=${channelId}';
-//   var headers = {
-//     'auth_token': token,
-//   };
-//   // var queryParameters = {'channelId': channelId};
+Future<Map<String, dynamic>?> updateDeviceName(
+  String token,
+  String deviceId,
+  String userId,
+  String newName,
+) async {
+  try {
+    var baseUrl =
+        'https://ojt-relay-switch-api.vercel.app/api/devices/update-name?deviceId=${deviceId}&userId=${userId}';
+    var headers = {'auth_token': token};
+    var body = {'newName': newName}; // Encode the body as JSON
 
-//   var url = Uri.parse(baseUrl).replace(queryParameters: queryParameters);
-//   var response = await put(url, headers: headers);
+    var queryParameters = {
+      'deviceId': deviceId,
+      'userId': userId,
+    };
 
-//   if (response.statusCode != 200) {
-//     print("HTTP PUT REQUEST FAILED.");
-//     return 0; // Return 0 if the request fails
-//   } else {
-//     var jsonResponse = jsonDecode(response.body) as List<dynamic>;
-//     return jsonResponse;
-//   }
-// }
+    var url = Uri.parse(baseUrl).replace(queryParameters: queryParameters);
+    var response = await put(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      // Successfully updated the device name
+      var jsonResponse = jsonDecode(response.body);
+      return jsonResponse;
+    } else {
+      // Request failed
+      print("HTTP PUT REQUEST FAILED. Status Code: ${response.statusCode}");
+      print(response.body); // Print the response body for debugging purposes
+      return null;
+    }
+  } catch (e) {
+    // Exception occurred while making the request
+    print("Error: $e");
+    return null;
+  }
+}
 
 Future getChannels(String deviceId) async {
   // Define your base URL
@@ -168,7 +145,7 @@ Future getDevices(String deviceId, String token) async {
 }
 
 Future<bool> addNewChannel(BuildContext context, String deviceID,
-    String tokenID, String name, String deviceStatus) async {
+    String tokenID, String name, String deviceStatus, String userID) async {
   try {
     Response response = await post(
         Uri.parse(
@@ -188,6 +165,7 @@ Future<bool> addNewChannel(BuildContext context, String deviceID,
               tokenID: tokenID,
               name: name,
               deviceStatus: deviceStatus,
+              userID: userID,
             ),
             transitionDuration: Duration(seconds: 5),
             reverseTransitionDuration: Duration(seconds: 0),
@@ -232,12 +210,14 @@ class ChannelPage extends StatefulWidget {
   final String tokenID;
   final String name;
   final String deviceStatus;
+  final String userID;
 
   ChannelPage(
       {required this.deviceID,
       required this.tokenID,
       required this.name,
       required this.deviceStatus,
+      required this.userID,
       Key? key})
       : super(key: key);
 
@@ -256,17 +236,17 @@ class _ChannelPageState extends State<ChannelPage> {
 
       // Add device containers for each device in the list
       for (var channel in channels) {
-        channelData.add({'status': channel['status']});
+        // channelData.add({'status': channel['status']});
         gridChild.add(buildDeviceContainer(context, widget.deviceID,
             channel['name'], channel['_id'], channel['status']));
 
         // Add the device to the allDevicesList
       }
 
-      channelData.forEach((channel) {
-        bool status = channel['status']!;
-        print("Status: $status");
-      });
+      // channelData.forEach((channel) {
+      //   bool status = channel['status']!;
+      //   print("Status: $status");
+      // });
 
       EasyLoading.dismiss();
       // Force a rebuild of the widget to display the new device containers
@@ -368,6 +348,49 @@ class _ChannelPageState extends State<ChannelPage> {
     );
   }
 
+  void _showRenameDialog(BuildContext context, String token, String deviceId,
+      String userId, String channelName) {
+    TextEditingController _channelNameController = TextEditingController();
+    final channelNameProvider =
+        Provider.of<ChannelNameProvider>(context, listen: false);
+    _channelNameController.text = channelNameProvider.channelName;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Rename Channel'),
+          content: TextFormField(
+            controller: _channelNameController,
+            decoration: InputDecoration(
+              labelText: 'New Channel Name',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                String newName = _channelNameController.text;
+
+                channelNameProvider.setChannelName(newName);
+
+                updateDeviceName(token, deviceId, userId, newName);
+
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     bool status = widget.deviceStatus == widget.deviceStatus;
@@ -379,7 +402,7 @@ class _ChannelPageState extends State<ChannelPage> {
             child: Icon(Icons.add),
             onPressed: () {
               addNewChannel(context, widget.deviceID, widget.tokenID,
-                  widget.name, widget.deviceStatus);
+                  widget.name, widget.deviceStatus, widget.userID);
             },
           ),
         ),
@@ -421,19 +444,18 @@ class _ChannelPageState extends State<ChannelPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Consumer<ChannelNameProvider>(
-                          //   builder: (context, channelNameProvider, _) =>
-                          Text(
-                            widget.name,
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              decoration: TextDecoration.none,
+                          Consumer<ChannelNameProvider>(
+                            builder: (context, channelNameProvider, _) => Text(
+                              widget.name,
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                decoration: TextDecoration.none,
+                              ),
                             ),
                           ),
-                          // ),
                           IconButton(
                             icon: Icon(
                               Icons.edit,
@@ -442,41 +464,9 @@ class _ChannelPageState extends State<ChannelPage> {
                             ),
                             onPressed: () {
                               print("Edit button");
-                              // _showRenameDialog(context, widget.tokenID);
 
-                              // showDialog(
-                              //   context: context,
-                              //   builder: (BuildContext context) {
-                              //     return AlertDialog(
-                              //       title: Text('Rename Channel'),
-                              //       content: TextFormField(
-                              //         decoration: InputDecoration(
-                              //           labelText: 'New Channel Name',
-                              //         ),
-                              //       ),
-                              //       actions: [
-                              //         TextButton(
-                              //           onPressed: () {
-                              //             Navigator.of(context)
-                              //                 .pop(); // Close the dialog
-                              //           },
-                              //           child: Text('Cancel'),
-                              //         ),
-                              //         TextButton(
-                              //           onPressed: () {
-                              //             String newName =
-                              //                 _channelNameController.text;
-                              //             channelNameProvider
-                              //                 .setChannelName(newName);
-                              //             Navigator.of(context)
-                              //                 .pop(); // Close the dialog
-                              //           },
-                              //           child: Text('Save'),
-                              //         ),
-                              //       ],
-                              //     );
-                              //   },
-                              // );
+                              _showRenameDialog(context, widget.tokenID,
+                                  widget.deviceID, widget.userID, widget.name);
                             },
                           ),
                         ],

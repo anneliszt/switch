@@ -213,6 +213,7 @@ class _DevicesPageState extends State<DevicesPage> {
               tokenID: tokenID,
               name: name,
               deviceStatus: deviceStatus,
+              userID: userID,
             ),
             transitionDuration: Duration(seconds: 5),
             reverseTransitionDuration: Duration(seconds: 0),
