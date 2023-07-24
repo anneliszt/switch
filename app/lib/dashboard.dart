@@ -180,7 +180,11 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
                   IconButton(
+<<<<<<< Updated upstream
                     onPressed: () {},
+=======
+                    onPressed: () => Navigator.pop(context),
+>>>>>>> Stashed changes
                     icon: Icon( 
                       Icons.notifications_outlined,
                       color: Color(0xFF393939),

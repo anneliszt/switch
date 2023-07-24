@@ -25,9 +25,10 @@ class EditChannelPage extends StatelessWidget {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(30.0),
             child: InkWell(
               onTap: () {
                 Navigator.push(
@@ -36,7 +37,12 @@ class EditChannelPage extends StatelessWidget {
                 );
               },
               child: Container(
+<<<<<<< Updated upstream
                 height: 75,
+=======
+                height: 70,
+                width: 350,
+>>>>>>> Stashed changes
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.blueGrey,
@@ -46,6 +52,7 @@ class EditChannelPage extends StatelessWidget {
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Consumer<ChannelNameProvider>(
                       builder: (context, channelNameProvider, _) => Row(
@@ -63,11 +70,30 @@ class EditChannelPage extends StatelessWidget {
                           ),
                           SizedBox(
                               width:
+<<<<<<< Updated upstream
                                   10), // Add spacing between the profile picture and the text
                           Text(
                             channelNameProvider.channelName,
                             style: TextStyle(
                               fontSize: 18,
+=======
+                                  30),
+                          Text(
+                            'Edit ',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF393939),
+                              decoration: TextDecoration.none,
+                            ),
+                          ), // Add spacing between the profile picture and the text
+                          Text(
+                            channelNameProvider.channelName,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'Poppins',
+>>>>>>> Stashed changes
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -111,11 +137,18 @@ class EditChannelPage extends StatelessWidget {
                             },
                           );
                         },
+<<<<<<< Updated upstream
                         child: Icon(Icons.delete),
                         style: ElevatedButton.styleFrom(
                           fixedSize: Size(50, 66),
                           primary: Colors
                               .blueGrey, // Set the desired height and width of the button
+=======
+                        child: Icon(Icons.delete, size: 30, color: Color(0xFFF46262),),
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(35, 60), 
+                          backgroundColor: Color(0xFFD9D9D9), // Set the desired height and width of the button
+>>>>>>> Stashed changes
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(
