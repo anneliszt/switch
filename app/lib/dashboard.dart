@@ -1,15 +1,53 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'dart:math';
-
+import 'dart:convert';
 import 'package:app/homepage.dart';
 import 'package:app/login.dart';
 import 'package:app/main.dart';
 import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+
+Future<void> createNewDate(BuildContext context, date, String tokenID, String channelId) async {
+  final response = await post(
+    Uri.parse('https://ojt-relay-switch-api.vercel.app/api/devices/channel-set-date?channelId=${channelId}'),
+    headers: {'auth_token': tokenID},
+    body: jsonEncode(<String, String>{
+      'date': date,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final responseBody = jsonDecode(response.body);
+        print('API Response: $responseBody');
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+    throw Exception('Failed to create album. Status Code: ${response.statusCode}, Message: ${response.body}');
+  }
+}
+
+extension TimeOfDayConverter on TimeOfDay {
+  String to24hours() {
+    final hour = this.hour.toString().padLeft(2, "0");
+    final min = this.minute.toString().padLeft(2, "0");
+    return "$hour:$min";
+  }
+}
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
+  final String channelId;
+  final String tokenID;
+  final String name;
+  final String deviceStatus;
+  DashboardPage(
+      {required this.channelId,
+      required this.tokenID,
+      required this.name,
+      required this.deviceStatus,
+      Key? key})
+      : super(key: key);
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -30,22 +68,22 @@ class _DashboardPageState extends State<DashboardPage> {
       initialTime: onSelectedTime,
       builder: (context, child) {
       return Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.light(
-            primary: mainColor,
-            onPrimary: Colors.white, // <-- SEE HERE
-            onSurface: Color(0xFF393939),// <-- SEE HERE
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor: mainColor,// button text color
-            ),
-          ),
-        ),
-        child: child!,
-      );
+                data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: mainColor,
+                    onPrimary: Colors.white, // <-- SEE HERE
+                    onSurface: Color(0xFF393939),// <-- SEE HERE
+                  ),
+                  textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(
+                      foregroundColor: mainColor,// button text color
+                    ),
+                  ),
+                ),
+                child: child!,
+              );
     }, 
-    );
+  );
     if (selected != null && selected != onSelectedDate) {
       setState(() {
         onSelectedTime = selected;
@@ -53,10 +91,11 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+
   _offSelectTime(BuildContext context) async {
     final TimeOfDay? selected = await showTimePicker(
       context: context,
-      initialTime: onSelectedTime,
+      initialTime: offSelectedTime,
       builder: (context, child) {
       return Theme(
         data: Theme.of(context).copyWith(
@@ -82,7 +121,7 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  _onSelectDate(BuildContext context) async {
+  _onSelectDate(BuildContext context, bool isOnSwitched) async {
     final DateTime? selected = await showDatePicker(
       context: context,
       initialDate: onSelectedDate,
@@ -109,6 +148,8 @@ class _DashboardPageState extends State<DashboardPage> {
     if (selected != null && selected != onSelectedDate) {
       setState(() {
         onSelectedDate = selected;
+        String formattedOnselectedDate = '${onSelectedDate.month}/${onSelectedDate.day}/${onSelectedDate.year}';
+        createNewDate(context, formattedOnselectedDate, widget.tokenID, widget.channelId);
       });
     }
   }
@@ -402,15 +443,16 @@ class _DashboardPageState extends State<DashboardPage> {
                               width: 2, 
                               color: Color(0xFFD7D7D7)),
                                             ),
-                            child:ElevatedButton(onPressed: () {
-                              _onSelectDate(context);
-                            },
+                            child:ElevatedButton(
+                             onPressed: isOnSwitched
+                              ? () => _onSelectDate(context, true)
+                              : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor:Color(0xFFEEEEEE)),                    
                                 child: Text(
                               '${onSelectedDate.month}/${onSelectedDate.day}/${onSelectedDate.year}',
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 18,
                                 fontFamily: 'Poppins',
                                 color: Color(0xFF393939),
                                 decoration: TextDecoration.none,
@@ -441,15 +483,13 @@ class _DashboardPageState extends State<DashboardPage> {
                               width: 2, 
                               color: Color(0xFFD7D7D7)),
                                             ),
-                            child:ElevatedButton(onPressed: () {
-                              _onSelectTime(context);
-                            },
+                            child:ElevatedButton(onPressed: isOnSwitched ? () => _onSelectTime(context) : null,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:Color(0xFFEEEEEE)),                    
+                                backgroundColor:Color(0xFFEEEEEE)),                    
                                 child: Text(
-                              '${onSelectedTime.format(context)}',
+                              '${onSelectedTime.to24hours()}',
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 18,
                                 fontFamily: 'Poppins',
                                 color: Color(0xFF393939),
                                 decoration: TextDecoration.none,
@@ -511,15 +551,13 @@ class _DashboardPageState extends State<DashboardPage> {
                               width: 2, 
                               color: Color(0xFFD7D7D7)),
                                             ),
-                            child:ElevatedButton(onPressed: () {
-                              _offSelectDate(context);
-                              },
+                            child:ElevatedButton(onPressed:isOffSwitched ? () => _offSelectDate(context) : null,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:Color(0xFFEEEEEE)),                    
                                   child: Text(
                                 '${offSelectedDate.month}/${offSelectedDate.day}/${offSelectedDate.year}',
                                 style: TextStyle(
-                                  fontSize: 17,
+                                  fontSize: 18,
                                   fontFamily: 'Poppins',
                                   color: Color(0xFF393939),
                                   decoration: TextDecoration.none,
@@ -551,15 +589,13 @@ class _DashboardPageState extends State<DashboardPage> {
                               width: 2, 
                               color: Color(0xFFD7D7D7)),
                                             ),
-                            child:ElevatedButton(onPressed: () {
-                              _offSelectTime(context);
-                            },
+                            child:ElevatedButton(onPressed:isOffSwitched ? () => _offSelectTime(context) : null, 
                             style: ElevatedButton.styleFrom(
                               backgroundColor:Color(0xFFEEEEEE)),                    
                                 child: Text(
-                              '${offSelectedTime.format(context)}',
+                              '${offSelectedTime.to24hours()}',
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 18,
                                 fontFamily: 'Poppins',
                                 color: Color(0xFF393939),
                                 decoration: TextDecoration.none,

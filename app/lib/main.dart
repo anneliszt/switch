@@ -1,3 +1,4 @@
+import 'package:app/dashboard.dart';
 import 'package:app/devices.dart';
 import 'package:flutter/material.dart';
 import 'package:app/login.dart';

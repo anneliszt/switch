@@ -183,7 +183,12 @@ class _ChannelPageState extends State<ChannelPage> {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-                DashboardPage(),
+                DashboardPage(
+                  channelId: channelID,
+                  tokenID: tokenID,
+                  name: name,
+                  deviceStatus: deviceID,
+                ),
             transitionDuration: Duration(seconds: 5),
             reverseTransitionDuration: Duration(seconds: 0),
           ),
