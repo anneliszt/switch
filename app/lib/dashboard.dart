@@ -8,7 +8,9 @@ import 'package:app/main.dart';
 import 'package:app/scan.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
+<<<<<<< Updated upstream
 Future<void> createNewDate(BuildContext context, date, String tokenID, String channelId) async {
   final response = await post(
     Uri.parse('https://ojt-relay-switch-api.vercel.app/api/devices/channel-set-date?channelId=${channelId}'),
@@ -28,6 +30,52 @@ Future<void> createNewDate(BuildContext context, date, String tokenID, String ch
   }
 }
 
+=======
+Future<void> createNewDateOnChannel(String channelID, String tokenID, String date) async {
+  final Uri uri = Uri.parse('https://ojt-relay-switch-api.vercel.app/api/devices/channel-set-date?channelId=$channelID');
+  print('sending to $uri');
+  final Map<String, String> body = {"date": date};
+  print(body);
+
+  final response = await post(
+    uri,
+    headers: {"auth_token":tokenID},
+    body: body,
+  );
+
+  if (response.statusCode == 200) {
+    final responseBody = jsonDecode(response.body);
+    print('API Response: $responseBody');
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception with the response details.
+    throw Exception('Failed to create a new date on the channel. Status Code: ${response.statusCode}, Body: ${response.body}');
+  }
+}
+
+Future<void> createTimeout(String channelID, String tokenID, String time) async {
+  final Uri uri = Uri.parse('https://ojt-relay-switch-api.vercel.app//api/devices/channel-set-timeout?channelId=$channelID');
+  print('sending to $uri');
+  final Map<String, String> body = {"timeout": time};
+  print(body);
+
+  final response = await post(
+    uri,
+    headers: {"auth_token":tokenID},
+    body: body,
+  );
+
+  if (response.statusCode == 200) {
+    final responseBody = jsonDecode(response.body);
+    print('API Response: $responseBody');
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception with the response details.
+    throw Exception('Failed to create a new date on the channel. Status Code: ${response.statusCode}, Body: ${response.body}');
+  }
+}
+
+>>>>>>> Stashed changes
 extension TimeOfDayConverter on TimeOfDay {
   String to24hours() {
     final hour = this.hour.toString().padLeft(2, "0");
@@ -37,6 +85,7 @@ extension TimeOfDayConverter on TimeOfDay {
 }
 
 class DashboardPage extends StatefulWidget {
+<<<<<<< Updated upstream
   final String channelId;
   final String tokenID;
   final String name;
@@ -46,6 +95,15 @@ class DashboardPage extends StatefulWidget {
       required this.tokenID,
       required this.name,
       required this.deviceStatus,
+=======
+  final String channelID;
+  final String tokenID;
+  final String name;
+  DashboardPage(
+      {required this.channelID,
+      required this.tokenID,
+      required this.name,
+>>>>>>> Stashed changes
       Key? key})
       : super(key: key);
 
@@ -67,7 +125,13 @@ class _DashboardPageState extends State<DashboardPage> {
       context: context,
       initialTime: onSelectedTime,
       builder: (context, child) {
+<<<<<<< Updated upstream
       return Theme(
+=======
+      return MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), 
+        child: Theme(
+>>>>>>> Stashed changes
                 data: Theme.of(context).copyWith(
                   colorScheme: ColorScheme.light(
                     primary: mainColor,
@@ -79,14 +143,22 @@ class _DashboardPageState extends State<DashboardPage> {
                       foregroundColor: mainColor,// button text color
                     ),
                   ),
+<<<<<<< Updated upstream
                 ),
                 child: child!,
               );
+=======
+                ), child: child!)
+      );
+>>>>>>> Stashed changes
     }, 
   );
     if (selected != null && selected != onSelectedDate) {
       setState(() {
         onSelectedTime = selected;
+        String time = onSelectedTime.to24hours().toString();
+        print('time: $time');
+        createTimeout(widget.channelID, widget.tokenID, time);
       });
     }
   }
@@ -97,6 +169,7 @@ class _DashboardPageState extends State<DashboardPage> {
       context: context,
       initialTime: offSelectedTime,
       builder: (context, child) {
+<<<<<<< Updated upstream
       return Theme(
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
@@ -114,13 +187,39 @@ class _DashboardPageState extends State<DashboardPage> {
       );
     }, 
     );
+=======
+      return MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), 
+        child: Theme(
+                data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: mainColor,
+                    onPrimary: Colors.white, // <-- SEE HERE
+                    onSurface: Color(0xFF393939),// <-- SEE HERE
+                  ),
+                  textButtonTheme: TextButtonThemeData(
+                    style: TextButton.styleFrom(
+                      foregroundColor: mainColor,// button text color
+                    ),
+                  ),
+                ), child: child!)
+      );
+    }, 
+  );
+>>>>>>> Stashed changes
     if (selected != null && selected != onSelectedDate) {
       setState(() {
         offSelectedTime = selected;
+        String formattedTime = offSelectedTime.to24hours().toString();
+        createTimeout(widget.channelID, widget.tokenID, formattedTime);
       });
     }
   }
 
+<<<<<<< Updated upstream
+=======
+//here
+>>>>>>> Stashed changes
   _onSelectDate(BuildContext context, bool isOnSwitched) async {
     final DateTime? selected = await showDatePicker(
       context: context,
@@ -148,8 +247,13 @@ class _DashboardPageState extends State<DashboardPage> {
     if (selected != null && selected != onSelectedDate) {
       setState(() {
         onSelectedDate = selected;
+<<<<<<< Updated upstream
         String formattedOnselectedDate = '${onSelectedDate.month}/${onSelectedDate.day}/${onSelectedDate.year}';
         createNewDate(context, formattedOnselectedDate, widget.tokenID, widget.channelId);
+=======
+        String formattedOnSelectedDate = DateFormat('MM/dd/yyyy').format(onSelectedDate).toString();
+        createNewDateOnChannel(widget.channelID, widget.tokenID, formattedOnSelectedDate);
+>>>>>>> Stashed changes
       });
     }
   }
@@ -181,6 +285,8 @@ class _DashboardPageState extends State<DashboardPage> {
     if (selected != null && selected != offSelectedDate) {
       setState(() {
         offSelectedDate = selected;
+        String formattedOnSelectedDate = DateFormat('MM/dd/yyyy').format(offSelectedDate).toString();
+        createNewDateOnChannel(widget.channelID, widget.tokenID, formattedOnSelectedDate);
       });
     }
   }

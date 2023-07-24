@@ -238,7 +238,7 @@ class _ChannelPageState extends State<ChannelPage> {
       for (var channel in channels) {
         // channelData.add({'status': channel['status']});
         gridChild.add(buildDeviceContainer(context, widget.deviceID,
-            channel['name'], channel['_id'], channel['status']));
+            channel['name'], channel['_id'], channel['status'], widget.tokenID));
 
         // Add the device to the allDevicesList
       }
@@ -264,7 +264,7 @@ class _ChannelPageState extends State<ChannelPage> {
   }
 
   Widget buildDeviceContainer(BuildContext context, String deviceID,
-      String name, String channelID, bool status) {
+      String name, String channelID, bool status, String tokenID) {
     int initialLabelIndex = status ? 1 : 0;
     return GestureDetector(
       onTap: () {
@@ -272,7 +272,10 @@ class _ChannelPageState extends State<ChannelPage> {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-                DashboardPage(name: name),
+                DashboardPage(
+                  channelID: channelID,
+                  tokenID: tokenID,
+                  name: name),
             transitionDuration: Duration(seconds: 5),
             reverseTransitionDuration: Duration(seconds: 0),
           ),
