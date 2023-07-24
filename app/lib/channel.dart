@@ -13,11 +13,63 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'devices.dart';
 
+List<Map<String, bool>> channelData = [];
+
 var gridChild = <Widget>[];
-bool status = false;
+
+class ChannelNameProvider with ChangeNotifier {
+  String _channelName = 'Channel 1'; // Initial channel name
+
+  String get channelName => _channelName;
+
+  void setChannelName(String newName) {
+    _channelName = newName;
+    notifyListeners();
+  }
+}
+
+// void _showRenameDialog(BuildContext context, String token) {
+//   TextEditingController _channelNameController = TextEditingController();
+//   final channelNameProvider =
+//       Provider.of<ChannelNameProvider>(context, listen: false);
+//   _channelNameController.text = channelNameProvider.channelName;
+
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: Text('Rename Channel'),
+//         content: TextFormField(
+//           controller: _channelNameController,
+//           decoration: InputDecoration(
+//             labelText: 'New Channel Name',
+//           ),
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () {
+//               Navigator.of(context).pop(); // Close the dialog
+//             },
+//             child: Text('Cancel'),
+//           ),
+//           TextButton(
+//             onPressed: () {
+//               String newName = _channelNameController.text;
+//               channelNameProvider.setChannelName(newName);
+//               updateChannelName(token);
+//               Navigator.of(context).pop(); // Close the dialog
+//             },
+//             child: Text('Save'),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
 
 Future updateChannelStatus(
     String token, String deviceId, String channelId) async {
@@ -36,6 +88,50 @@ Future updateChannelStatus(
     return 0; // Return 0 if the request fails
   } else {
     var jsonResponse = jsonDecode(response.body) as List<dynamic>;
+    return jsonResponse;
+  }
+}
+
+// Future updateChannelName(String token) async {
+//   var baseUrl =
+//       'https://ojt-relay-switch-api.vercel.app/api/devices/update-channel-name?channelId=${channelId}';
+//   var headers = {
+//     'auth_token': token,
+//   };
+//   // var queryParameters = {'channelId': channelId};
+
+//   var url = Uri.parse(baseUrl).replace(queryParameters: queryParameters);
+//   var response = await put(url, headers: headers);
+
+//   if (response.statusCode != 200) {
+//     print("HTTP PUT REQUEST FAILED.");
+//     return 0; // Return 0 if the request fails
+//   } else {
+//     var jsonResponse = jsonDecode(response.body) as List<dynamic>;
+//     return jsonResponse;
+//   }
+// }
+
+Future getChannels(String deviceId) async {
+  // Define your base URL
+  var baseUrl =
+      'https://ojt-relay-switch-api.vercel.app/api/devices/channels?deviceId=${deviceId}';
+
+  // Define your query parameters as a map
+  var queryParameters = {'deviceId': deviceId};
+
+  // Append the query parameters to the base URL
+  var url = Uri.parse(baseUrl).replace(queryParameters: queryParameters);
+
+  var response = await get(url);
+
+  if (response.statusCode != 200) {
+    print("HTTP GET REQUEST FAILED.");
+    return 0; // Return 0 if the request fails
+  } else {
+    var jsonResponse = jsonDecode(response.body) as List<dynamic>;
+    // Return the count of devices for the specified user
+    // Return the list of devices
     return jsonResponse;
   }
 }
@@ -136,6 +232,7 @@ class ChannelPage extends StatefulWidget {
   final String tokenID;
   final String name;
   final String deviceStatus;
+
   ChannelPage(
       {required this.deviceID,
       required this.tokenID,
@@ -150,21 +247,32 @@ class ChannelPage extends StatefulWidget {
 
 class _ChannelPageState extends State<ChannelPage> {
   Future<void> _loadChannels(BuildContext context) async {
+    ;
     EasyLoading.show(); // Show loading indicator
-    List<dynamic> channels = await getDevices(widget.deviceID, widget.tokenID);
+    List<dynamic> channels = await getChannels(widget.deviceID);
     if (channels.isNotEmpty) {
       // Clear the gridChild list before adding new device containers
       gridChild.clear();
 
       // Add device containers for each device in the list
-      for (var device in channels) {
+      for (var channel in channels) {
+        channelData.add({'status': channel['status']});
         gridChild.add(buildDeviceContainer(context, widget.deviceID,
-            device['name'], device['_id'], device['status'], widget.tokenID));
+            channel['name'], channel['_id'], channel['status']));
+
         // Add the device to the allDevicesList
       }
+
+      channelData.forEach((channel) {
+        bool status = channel['status']!;
+        print("Status: $status");
+      });
+
       EasyLoading.dismiss();
       // Force a rebuild of the widget to display the new device containers
       setState(() {});
+
+      ;
     }
   }
 
@@ -176,7 +284,8 @@ class _ChannelPageState extends State<ChannelPage> {
   }
 
   Widget buildDeviceContainer(BuildContext context, String deviceID,
-      String name, String channelID, bool status, String tokenID) {
+      String name, String channelID, bool status) {
+    int initialLabelIndex = status ? 1 : 0;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -224,7 +333,7 @@ class _ChannelPageState extends State<ChannelPage> {
                     isVertical: true,
                     minWidth: 70.0,
                     minHeight: 50.0,
-                    initialLabelIndex: 0,
+                    initialLabelIndex: initialLabelIndex,
                     cornerRadius: 10.0,
                     activeFgColor: Colors.white,
                     inactiveBgColor: Colors.grey,
@@ -245,6 +354,8 @@ class _ChannelPageState extends State<ChannelPage> {
                     curve: Curves
                         .bounceInOut, // animate must be set to true when using custom curve
                     onToggle: (index) {
+                      updateChannelStatus(
+                          widget.tokenID, widget.deviceID, channelID);
                       print('switched to: $index');
                     },
                   ),
@@ -259,7 +370,7 @@ class _ChannelPageState extends State<ChannelPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool status = widget.deviceStatus == 'active';
+    bool status = widget.deviceStatus == widget.deviceStatus;
     return Scaffold(
         floatingActionButton: Visibility(
           visible: gridChild.length < 4,
@@ -299,7 +410,7 @@ class _ChannelPageState extends State<ChannelPage> {
                 ),
               ),
               const SizedBox(
-                height: 40,
+                height: 5,
               ),
               Material(
                   color: bgColor,
@@ -310,6 +421,8 @@ class _ChannelPageState extends State<ChannelPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          // Consumer<ChannelNameProvider>(
+                          //   builder: (context, channelNameProvider, _) =>
                           Text(
                             widget.name,
                             style: TextStyle(
@@ -320,6 +433,7 @@ class _ChannelPageState extends State<ChannelPage> {
                               decoration: TextDecoration.none,
                             ),
                           ),
+                          // ),
                           IconButton(
                             icon: Icon(
                               Icons.edit,
@@ -328,6 +442,7 @@ class _ChannelPageState extends State<ChannelPage> {
                             ),
                             onPressed: () {
                               print("Edit button");
+                              // _showRenameDialog(context, widget.tokenID);
 
                               // showDialog(
                               //   context: context,
@@ -396,7 +511,7 @@ class _ChannelPageState extends State<ChannelPage> {
                         ],
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 15,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

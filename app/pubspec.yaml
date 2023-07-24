@@ -35,6 +35,7 @@ dependencies:
   cool_alert: ^2.0.1
   flutter_easyloading: ^3.0.5
   image_picker: ^0.8.4+4
+  shared_preferences: ^2.0.9
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
